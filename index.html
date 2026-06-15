@@ -574,12 +574,19 @@ async function loadApp() {
 
   try {
     const me = await spotifyGet('https://api.spotify.com/v1/me');
-    document.getElementById('userName').textContent = me.display_name || me.id;
+    document.getElementById('userName').textContent = me.display_name || me.email || me.id || '?';
+    const debugEl = document.getElementById('appError');
+    debugEl.textContent = 'DEBUG — logged in as: ' + (me.email || me.id) + ' | product: ' + me.product;
+    debugEl.style.display = 'block';
+    debugEl.style.background = '#0d1f14';
+    debugEl.style.color = '#1DB954';
+    debugEl.style.borderColor = '#1a3d25';
 
     const pl = await spotifyGet('https://api.spotify.com/v1/me/playlists?limit=20');
+    debugEl.style.display = 'none';
     renderPlaylists(pl.items);
   } catch (e) {
-    showAppError('Could not load playlists. ' + e.message);
+    showAppError('Error: ' + e.message);
   }
 }
 
